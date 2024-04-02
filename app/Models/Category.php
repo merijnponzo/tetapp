@@ -121,7 +121,6 @@ class Category extends Model
             // update site->created
             $site->created = 1;
             $site->save();
-
         }
     }
 
@@ -159,15 +158,30 @@ class Category extends Model
         return $category;
     }
 
-    /*
-    // create site with use id and name
-    public static function createSite($userId, $name)
+    public static function updateCategory($category_id, $site_id, $request)
     {
-        $site = new Site();
-        $site->user_id = $userId;
-        $site->name = $name;
-        $site->save();
-        return $site;
+        $card = Category::find($category_id);
+        $card->name = $request['name'];
+        $card->save();
     }
-    */
+
+    public static function createCategory($category_id, $site_id, $request)
+    {
+        $category = new Category();
+        $category->name = $request['name'];
+      
+        $category->site_id = $site_id;
+        $category->type = strtolower($request['name']);
+        $category->visibility = 1;
+        
+        if($category_id === 'false'){
+            $category->handle = 'primary';
+            $category->parent_id = null;
+        } else {
+            $category->handle = 'secondary';
+            $category->parent_id = $category_id;
+        }
+        $category->save();
+    }
+
 }

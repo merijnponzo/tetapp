@@ -100,7 +100,6 @@ class BrowseController extends Controller
         $primary = Category::getSingleCategory($secondary->parent_id, self::getSiteId());
 
 
-
         return Inertia::render('Browse/Index', [
             'primary' => $primary,
             'secondary' => $secondary,
@@ -112,7 +111,7 @@ class BrowseController extends Controller
 
 
     // card form landing
-    public function form($category_id, $card_id = 'create')
+    public function form_card($category_id, $card_id = 'create')
     {
         // get card
         if ($card_id !== 'create') {
@@ -124,7 +123,7 @@ class BrowseController extends Controller
         $category = Category::getSingleCategory($category_id, self::getSiteId());
 
 
-        return Inertia::render('Browse/Form', [
+        return Inertia::render('Browse/FormCard', [
             'category_id' => $category_id,
             'card_id' => $card_id,
             'card' => $card,
@@ -141,10 +140,53 @@ class BrowseController extends Controller
             'name' => 'required|max:128|min:2',
         ]);
 
-        $card = Card::createCard($category_id, $card_id, $validatedData);
-     
-
+        Card::createCard($category_id, $card_id, $validatedData);
         return redirect()->route('browse.cards', ['category_id' => $category_id]);
+    }
+
+    // category form landing
+    public function form_category($category_id, $mode = 'create')
+    {
+
+        $category = Category::getSingleCategory($category_id, self::getSiteId());
+        return Inertia::render('Browse/FormCategory', [
+            'category_id' => $category_id,
+            'category' => $category,
+            'mode' => $mode
+        ]);
+    }
+
+    // create category
+    public function create_category(Request $request, $category_id, $mode = 'create')
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|max:128|min:2',
+        ]);
+
+
+        if ($mode === 'create') {
+            Category::createCategory($category_id, self::getSiteId(), $validatedData);
+        } else {
+            Category::updateCategory($category_id, self::getSiteId(), $validatedData);
+
+            $category = Category::getSingleCategory($category_id, self::getSiteId());
+        }
+        return redirect()->route('browse.category', ['category_id' => $category_id]);
+    }
+
+    public function toggle_category_visibility()
+    {
+        $category_id = request('category_id');
+
+        $category = Category::getSingleCategory($category_id, self::getSiteId());
+
+
+        if ($category) {
+            $category->visibility = !$category->visibility;
+            $category->save();
+        }
+        // redirect back
+        return redirect()->back();
     }
 
 

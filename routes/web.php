@@ -28,9 +28,12 @@ Route::prefix('browse')->middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [BrowseController::class, 'index'])->name('browse.index');
     Route::get('/category/{category_id}', [BrowseController::class, 'category'])->name('browse.category');
     Route::get('/cards/{category_id}', [BrowseController::class, 'category_cards'])->name('browse.cards');
-    Route::get('/form/{category_id}/{card_id}', [BrowseController::class, 'form'])->name('browse.form');
-    Route::post('/form/{category_id}/{card_id}', [BrowseController::class, 'create_card'])->name('browse.form.create');
-    Route::delete('/form/{category_id}/{card_id}', [BrowseController::class, 'delete_card'])->name('browse.form.delete');
+    Route::get('/form-card/{category_id}/{card_id}', [BrowseController::class, 'form_card'])->name('browse.form.card');
+    Route::post('/form-card/{category_id}/{card_id}', [BrowseController::class, 'create_Card'])->name('browse.form.card-create');
+    Route::delete('/form-card/{category_id}/{card_id}', [BrowseController::class, 'delete_card'])->name('browse.form.card-delete');
+    Route::post('/form-category/visibility', [BrowseController::class, 'toggle_category_visibility'])->name('browse.form.category-visibility');
+    Route::get('/form-category/category/{category_id}/{mode}', [BrowseController::class, 'form_category'])->name('browse.form.category');
+    Route::post('/form-category/{category_id}/{mode}', [BrowseController::class, 'create_category'])->name('browse.form.category-create');
 });
 
 
