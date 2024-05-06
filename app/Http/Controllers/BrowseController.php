@@ -131,17 +131,52 @@ class BrowseController extends Controller
         ]);
     }
 
+    // card form landing
+    public function form_subcards($category_id, $card_id)
+    {
+        // get card
+        if ($card_id) {
+            $card = Card::find($card_id);
+            $category = Category::getSingleCategory($category_id, self::getSiteId());
 
+
+            return Inertia::render('Browse/FormSubcards', [
+                'category_id' => $category_id,
+                'card_id' => $card_id,
+                'card' => $card,
+                'category' => $category,
+                'subcards' => $card->subcards
+            ]);
+        }
+    }
     // create card
     public function create_card(Request $request, $category_id, $card_id)
     {
 
         $validatedData = $request->validate([
             'name' => 'required|max:128|min:2',
+            'subcards' => 'array',
         ]);
 
         Card::createCard($category_id, $card_id, $validatedData);
         return redirect()->route('browse.cards', ['category_id' => $category_id]);
+    }
+
+    public function create_subcards(Request $request, $category_id, $card_id)
+    {
+
+        $validatedData = $request->validate([
+            'subcards' => 'required|array',
+        ]);
+
+      
+        Card::createSubcards($category_id, $card_id, $validatedData);
+        return redirect()->route('browse.form.subcards', 
+            [
+                'card_id' => $card_id, 
+                'category_id' => $category_id,
+                'subcards' => $validatedData['subcards']
+            ]);
     }
 
     // category form landing

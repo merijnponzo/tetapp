@@ -51,11 +51,16 @@ const props = defineProps({
             </Link>
         </template>
         <div class="flex gap-2 absolute bottom-4 text-base items-center z-20" v-if="edit">
-            <Link v-if="card.category_id"
-                :href="route('browse.form.card', { card_id: card.id, category_id: card.category_id })"
-                class=" bg-blue-200 rounded-full px-8 py-3  hover:bg-blue-700 hover:text-white">
-            Bewerk
-            kaartje</Link>
+            <div v-if="card.category_id" class="flex gap-16">
+                <Link :href="route('browse.form.card', { card_id: card.id, category_id: card.category_id })"
+                    class=" bg-blue-200 rounded-full px-8 py-3  hover:bg-blue-700 hover:text-white">
+                Bewerk
+                kaartje</Link>
+                <Link :href="route('browse.form.subcards', { card_id: card.id, category_id: card.category_id })"
+                    class=" bg-purple-200 rounded-full px-8 py-3  hover:bg-blue-700 hover:text-white">
+                
+                Subkaartjes </Link>
+            </div>
             <Link v-else :href="route('browse.form.category', { category_id: card.id, mode: 'edit' })"
                 class=" bg-blue-200 rounded-full px-8 py-3  hover:bg-blue-700 hover:text-white">
             Bewerk

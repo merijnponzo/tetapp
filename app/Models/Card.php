@@ -50,11 +50,21 @@ class Card extends Model
             $card = new Card();
             $card->category_id = $category_id;
             $card->name = $request['name'];
+            $card->subcards = json_encode([]);
             $card->save();
         } else {
             $card = Card::find($card_id);
             $card->name = $request['name'];
+            $card->subcards = json_encode($request['subcards']);
             $card->save();
         }
+    }
+
+    public static function createSubcards($category_id, $card_id, $request)
+    {
+      
+            $card = Card::find($card_id);
+            $card->subcards = json_encode($request['subcards']);
+            $card->save();
     }
 }
