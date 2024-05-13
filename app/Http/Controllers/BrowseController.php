@@ -131,17 +131,56 @@ class BrowseController extends Controller
         ]);
     }
 
+    // card form landing
+    public function form_subcards($category_id, $card_id)
+    {
+        // get card
+        if ($card_id) {
+            $card = Card::find($card_id);
+            $category = Category::getSingleCategory($category_id, self::getSiteId());
 
+
+            return Inertia::render('Browse/FormSubcards', [
+                'category_id' => $category_id,
+                'card_id' => $card_id,
+                'card' => $card,
+                'category' => $category,
+                'subcards' => $card->subcards
+            ]);
+        }
+    }
     // create card
     public function create_card(Request $request, $category_id, $card_id)
     {
 
         $validatedData = $request->validate([
             'name' => 'required|max:128|min:2',
+            'subcards' => 'array',
         ]);
 
         Card::createCard($category_id, $card_id, $validatedData);
         return redirect()->route('browse.cards', ['category_id' => $category_id]);
+    }
+
+    public function create_subcards(Request $request)
+    {
+
+        $validatedData = $request->validate([
+            'card_id' => 'required',
+            'category_id' => 'required',
+            'subcards' => 'required|array',
+        ]);
+
+
+        Card::createSubcards($validatedData);
+        return redirect()->route(
+            'browse.form.subcards',
+            [
+                'card_id' => $validatedData['card_id'],
+                'category_id' => $validatedData['category_id'],
+                'subcards' => $validatedData['subcards']
+            ]
+        );
     }
 
     // category form landing
@@ -163,15 +202,22 @@ class BrowseController extends Controller
             'name' => 'required|max:128|min:2',
         ]);
 
+        $cat_id = false;
 
         if ($mode === 'create') {
-            Category::createCategory($category_id, self::getSiteId(), $validatedData);
+            $cat_id =  Category::createCategory($category_id, self::getSiteId(), $validatedData);
         } else {
             Category::updateCategory($category_id, self::getSiteId(), $validatedData);
-
             $category = Category::getSingleCategory($category_id, self::getSiteId());
+            if ($category) {
+                $cat_id = $category->id;
+            }
         }
-        return redirect()->route('browse.category', ['category_id' => $category_id]);
+        if ($category_id === 'false') {
+            return redirect()->route('browse.category', ['category_id' => $cat_id]);
+        } else {
+            return redirect()->route('browse.category', ['category_id' => $category_id]);
+        }
     }
 
     public function toggle_category_visibility()

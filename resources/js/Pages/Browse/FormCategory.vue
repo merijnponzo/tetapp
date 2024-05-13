@@ -14,7 +14,7 @@ const removeConfirm = ref(false)
 
 const props = defineProps({
     category_id: {
-        type: [Boolean, Number],
+        type: [Boolean, Number, String],
     },
     category: {
         type: Object,
@@ -50,8 +50,8 @@ const submit = () => {
                     <InputLabel for="name" class="font-bold"
                         :value="mode === 'create' ? 'Voeg Categorie toe' : 'Bewerk de naam van deze categorie'" />
                     <p class="font-bold" v-if="category_id === 'false'">in hoofdcategorie</p>
-                    <TextInput id="name" type="name"
-                        class="mt-1 block w-full p-2 border-b-2 border-gray-500" v-model="form.name" required autofocus
+                    <TextInput id="name" type="name" class="mt-1 block w-full p-2 border-b-2 border-gray-500"
+                        v-model="form.name" required autofocus
                         :placeholder="mode === 'create' ? 'Naam van nieuwe categorie' : `type hier een andere naam voor  ${category.name}`" />
 
                     <InputError class="mt-2" :message="form.errors.name" />

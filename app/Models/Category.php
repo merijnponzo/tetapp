@@ -169,12 +169,12 @@ class Category extends Model
     {
         $category = new Category();
         $category->name = $request['name'];
-      
+
         $category->site_id = $site_id;
         $category->type = strtolower($request['name']);
         $category->visibility = 1;
-        
-        if($category_id === 'false'){
+
+        if ($category_id === 'false') {
             $category->handle = 'primary';
             $category->parent_id = null;
         } else {
@@ -182,6 +182,9 @@ class Category extends Model
             $category->parent_id = $category_id;
         }
         $category->save();
-    }
 
+        $lastInsertedId = $category->id;
+
+        return $lastInsertedId;
+    }
 }
