@@ -1,4 +1,5 @@
 <script setup>
+import { onMounted } from 'vue'
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import IconRemove from '@/Components/IconRemove.vue';
@@ -36,8 +37,22 @@ const props = defineProps({
 const data = ref({
     category_id: props.category_id,
     card_id: props.card_id,
-    subcards: JSON.parse(props.subcards)
+    subcards: [],
 })
+
+
+
+onMounted(() => {
+
+    if (props.card.hasOwnProperty('subcards')) {
+        if (props.card.subcards === 'null') {
+            data.value.subcards = []
+        } else {
+            data.value.subcards = JSON.parse(props.card.subcards)
+        }
+    }
+})
+
 
 const notification = ref('')
 

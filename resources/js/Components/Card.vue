@@ -44,8 +44,12 @@ const props = defineProps({
 })
 
 onMounted(() => {
-    if (props.card.hasOwnProperty('subcards') && props.card.subcards !== null) {
-        subcards.value = JSON.parse(props.card.subcards)
+
+    if (props.card.hasOwnProperty('subcards')) {
+        if (props.card.subcards === 'null') {
+        } else {
+            subcards.value = JSON.parse(props.card.subcards)
+        }
     }
 })
 
