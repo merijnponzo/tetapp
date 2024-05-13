@@ -162,21 +162,25 @@ class BrowseController extends Controller
         return redirect()->route('browse.cards', ['category_id' => $category_id]);
     }
 
-    public function create_subcards(Request $request, $category_id, $card_id)
+    public function create_subcards(Request $request)
     {
 
         $validatedData = $request->validate([
+            'card_id' => 'required',
+            'category_id' => 'required',
             'subcards' => 'required|array',
         ]);
 
-      
-        Card::createSubcards($category_id, $card_id, $validatedData);
-        return redirect()->route('browse.form.subcards', 
+
+        Card::createSubcards($validatedData);
+        return redirect()->route(
+            'browse.form.subcards',
             [
-                'card_id' => $card_id, 
-                'category_id' => $category_id,
+                'card_id' => $validatedData['card_id'],
+                'category_id' => $validatedData['category_id'],
                 'subcards' => $validatedData['subcards']
-            ]);
+            ]
+        );
     }
 
     // category form landing
@@ -198,15 +202,22 @@ class BrowseController extends Controller
             'name' => 'required|max:128|min:2',
         ]);
 
+        $cat_id = false;
 
         if ($mode === 'create') {
-            Category::createCategory($category_id, self::getSiteId(), $validatedData);
+            $cat_id =  Category::createCategory($category_id, self::getSiteId(), $validatedData);
         } else {
             Category::updateCategory($category_id, self::getSiteId(), $validatedData);
-
             $category = Category::getSingleCategory($category_id, self::getSiteId());
+            if ($category) {
+                $cat_id = $category->id;
+            }
         }
-        return redirect()->route('browse.category', ['category_id' => $category_id]);
+        if ($category_id === 'false') {
+            return redirect()->route('browse.category', ['category_id' => $cat_id]);
+        } else {
+            return redirect()->route('browse.category', ['category_id' => $category_id]);
+        }
     }
 
     public function toggle_category_visibility()

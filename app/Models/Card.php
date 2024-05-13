@@ -44,7 +44,7 @@ class Card extends Model
     public static function createCard($category_id, $card_id, $request)
     {
 
-     
+
         // create card or update card if $card_id === 'create'
         if ($card_id === 'create') {
             $card = new Card();
@@ -60,11 +60,11 @@ class Card extends Model
         }
     }
 
-    public static function createSubcards($category_id, $card_id, $request)
+    public static function createSubcards($request)
     {
-      
-            $card = Card::find($card_id);
-            $card->subcards = json_encode($request['subcards']);
-            $card->save();
+
+        $card = Card::find($request['card_id']);
+        $card->subcards = json_encode($request['subcards']);
+        $card->save();
     }
 }

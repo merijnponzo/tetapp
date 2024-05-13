@@ -13,10 +13,10 @@ const editMode = ref(false)
 
 const props = defineProps({
     primary: {
-        type: Object,
+        type: [Object, Boolean],
     },
     secondary: {
-        type: Object,
+        type: [Boolean, Object],
     },
     categories: {
         type: Array,
@@ -66,7 +66,7 @@ const breadCrumbClass = "font-bold p-4 text-2xl hover:text-blue-500"
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 flex items-center justify-center rounded">
                     Maak kaartje aan
                     </Link>
-                    <Link v-else-if="editMode && categories.length < 9 && categories.length"
+                    <Link v-else-if="editMode && categories.length"
                         :href="route('browse.form.category', { category_id: (primary.id ? primary.id : 'false'), mode: 'create' })"
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 flex items-center justify-center rounded">
                     Maak Categorie aan
@@ -78,10 +78,10 @@ const breadCrumbClass = "font-bold p-4 text-2xl hover:text-blue-500"
         <div class="grid grid-cols-2 gap-4 mt-2">
             <template v-if="categories.length">
                 <Card v-for="categoryItem in categories" :class="{
-                        'bg-opacity-20 text-gray-600 ring-slate-200 ring-2': editMode && categoryItem.visibility !== '1',
-                        'opacity-100': editMode && categoryItem.visibility === '1',
-                        'hidden': categoryItem.visibility !== '1' && !editMode,
-                    }" :key="categoryItem.id" :card="categoryItem" :primary="primary" :secondary="secondary"
+                    'bg-opacity-20 text-gray-600 ring-slate-200 ring-2': editMode && categoryItem.visibility !== '1',
+                    'opacity-100': editMode && categoryItem.visibility === '1',
+                    'hidden': categoryItem.visibility !== '1' && !editMode,
+                }" :key="categoryItem.id" :card="categoryItem" :primary="primary" :secondary="secondary"
                     :edit="editMode"></Card>
             </template>
             <template v-if="cards.length">
@@ -99,14 +99,23 @@ const breadCrumbClass = "font-bold p-4 text-2xl hover:text-blue-500"
                     </Link>
                 </template>
                 <template v-else-if="!categories.length && !secondary.id">
-                    <h4 class="text-2xl">Geen Categorien gevonden in <strong>{{ secondary.name || primary.name }}</strong>
+                    <h4 class="text-2xl">Geen
+                        <span v-if="primary">Sub</span>
+                        Categorien gevonden in <strong>
+                            <span v-if="primary"> {{ primary.name }} </span>
+                            <span v-if="secondary"> {{ secondary.name }} </span>
+                        </strong>
                     </h4>
-                    <Link
-                        :href="route('browse.form.category', { category_id: (primary.id ? primary.id : 'false'), mode: 'create' })"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Maak Categorie aan
-                    </Link>
+                    <template v-if="primary">
+                        <Link
+                            :href="route('browse.form.category', { category_id: (primary.id ? primary.id : 'false'), mode: 'create' })"
+                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Maak <span
+                            v-if="primary">Sub</span> Categorie
+                        aan
+                        </Link>
+                    </template>
                 </template>
-              
+
             </div>
         </template>
 
