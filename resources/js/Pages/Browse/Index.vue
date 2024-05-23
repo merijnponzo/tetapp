@@ -75,7 +75,7 @@ const breadCrumbClass = "font-bold p-4 text-2xl hover:text-blue-500"
             </nav>
         </template>
 
-        <div class="grid grid-cols-2 gap-4 mt-2">
+        <div class="grid grid-cols-2 gap-6 mt-2">
             <template v-if="categories.length">
                 <Card v-for="categoryItem in categories" :class="{
                     'bg-opacity-20 text-gray-600 ring-slate-200 ring-2': editMode && categoryItem.visibility !== '1',
