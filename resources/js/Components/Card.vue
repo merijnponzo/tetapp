@@ -119,7 +119,7 @@ const showSubcardToggle = function () {
                             </div>
                         </template>
                         <template v-else>
-                            <div class="flex flex-col gap-8 items-center justify-center w-full h-full">
+                            <div class="flex flex-col gap-8 items-center justify-center w-full h-full text-3xl">
                                 <p class="opacity-60">{{ primary.name }}</p>
                                 <IconRight class="w-8 h-8 rotate-90 opacity-70" />
                                 <p class="opacity-60">{{ secondary.name }}</p>
